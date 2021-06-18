@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public string currentName;
+    public float difficulty;
 
     public List<string> names = new List<string>();
     public List<int> points = new List<int>();

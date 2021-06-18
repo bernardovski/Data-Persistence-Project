@@ -15,7 +15,7 @@ public class MainManager : MonoBehaviour
     private int highscorevalue;
     public GameObject GameOverText;
     
-    private bool m_Started = false;
+    public bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
@@ -35,7 +35,7 @@ public class MainManager : MonoBehaviour
             {
                 Vector3 position = new Vector3(-1.5f + step * x, 2.5f + i * 0.3f, 0);
                 var brick = Instantiate(BrickPrefab, position, Quaternion.identity);
-                brick.PointValue = pointCountArray[i];
+                brick.PointValue = pointCountArray[i] * Mathf.RoundToInt(GameManager.Instance.difficulty);
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
@@ -64,10 +64,12 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            /**
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
+            **/
         }
     }
 
@@ -92,7 +94,7 @@ public class MainManager : MonoBehaviour
     private void ShiftScores()
     {
         int addLocation = 0;
-        while (addLocation < 5 && m_Points < GameManager.Instance.points[addLocation])
+        while (addLocation < 5 && m_Points <= GameManager.Instance.points[addLocation])
         {
             addLocation++;
         }
