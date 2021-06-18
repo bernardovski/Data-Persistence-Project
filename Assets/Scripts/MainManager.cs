@@ -11,6 +11,8 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text HighscoreText;
+    private int highscorevalue;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -22,6 +24,7 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LoadValues();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -36,6 +39,12 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+    }
+
+    private void LoadValues()
+    {
+        highscorevalue = GameManager.Instance.points[0];
+        HighscoreText.text = "Best Score : " + GameManager.Instance.names[0] + " : " + GameManager.Instance.points[0];
     }
 
     private void Update()
@@ -71,6 +80,33 @@ public class MainManager : MonoBehaviour
     public void GameOver()
     {
         m_GameOver = true;
+      
+        ShiftScores();
+        GameManager.Instance.SaveName();
+        HighscoreText.text = "Best Score : " + GameManager.Instance.names[0] + " : " + GameManager.Instance.points[0];
+
         GameOverText.SetActive(true);
+        StartCoroutine(goDelay());
+    }
+
+    private void ShiftScores()
+    {
+        int addLocation = 0;
+        while (addLocation < 5 && m_Points < GameManager.Instance.points[addLocation])
+        {
+            addLocation++;
+        }
+
+        GameManager.Instance.points.Insert(addLocation, m_Points);
+        GameManager.Instance.points.RemoveAt(5);
+        GameManager.Instance.names.Insert(addLocation, GameManager.Instance.currentName);
+        GameManager.Instance.names.RemoveAt(5);
+
+    }
+
+    IEnumerator goDelay()
+    {
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene(2);
     }
 }
